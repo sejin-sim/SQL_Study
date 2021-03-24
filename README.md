@@ -1,4 +1,4 @@
-# SQL (`MySQL` 기준 작성)
+# SQL Tutorials (`MySQL` 기준 작성)
 
 ## DBMS와 SQL
 - 데이터베이스 : row & coulmn으로 이뤄진 table
