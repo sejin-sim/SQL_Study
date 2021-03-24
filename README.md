@@ -140,8 +140,8 @@ FROM copang_main.member;  # COALESCE 는 결합한다는 뜻으로, NULL인 값�
 ## 이상한 값을 제외하고 싶다면?
 ```mysql
 SELECT AVG(age) FROM copang_main.member WHERE age between 5 and 100;
-SELECT * FROM copang_main.member WHERE address NOT LIKE '%호'
-SELECT * FROM copang_main.member WHERE address LIKE '%호'
+SELECT * FROM copang_main.member WHERE address NOT LIKE '%호';
+SELECT * FROM copang_main.member WHERE address LIKE '%호';
 ```
 
 ## 컬럼의 값 변환해서 보기
@@ -204,10 +204,10 @@ WITH ROLLUP HAVING region IS NOT NULL
 ORDER BY region ASC, gender DESC;
 ```
 
-### SELECT 문의 입력 및 실행 순서
-## 입력 순서
+## SELECT 문의 입력 및 실행 순서
+### 입력 순서
 SELECT - FROM - WHERE - GROUP BY - HAVING - ORDER BY - LIMIT
-## 실행 순서
+### 실행 순서
 1. FROM : 어느 테이블을 대상으로 할 것인지를 먼저 결정합니다. 
 2. WHERE : 해당 테이블에서 특정 조건(들)을 만족하는 row들만 선별합니다. 
 3. GROUP BY : row들을 그루핑 기준대로 그루핑합니다. 하나의 그룹은 하나의 row로 표현됩니다.
@@ -216,4 +216,93 @@ SELECT - FROM - WHERE - GROUP BY - HAVING - ORDER BY - LIMIT
 6. ORDER BY : 각 row를 특정 기준에 따라서 정렬합니다. 
 7. LIMIT : 이전 단계까지 조회된 row들 중 일부 row들만을 추립니다. 
 
- 
+
+## 테이블 간의 연결 고리
+`Foreign Key` :  '다른 테이블의 특정 row를 식별할 수 있게 해주는 컬럼'   
+ㄴ stock table 에서 item의 item_id 를 referenced Table로 지정해 준다.
+
+## 다른 종류의 테이블 조인하기
+```mysql
+SELECT i.id,
+       i.name,
+       s.item_id,
+       s.inventory_count
+# FROM item AS i RIGHT OUTER JOIN stock # 오른쪽 기준 조회
+# FROM item LEFT OUTER JOIN stock       # 왼쪽 기준 조회
+FROM item AS i INNER JOIN stock AS s    # 둘다 있는 것 조회
+ON i.id = s.item_id;
+```
+
+## 결합 연산과 집합 연산
+```mysql
+SELECT * FROM member_A 
+INTERSECT    #  A ∩ B (INTERSECT 연산자 사용)
+MINUS        #  A - B (MINUS 연산자 또는 EXCEPT 연산자 사용)
+UNION        #  A U B (UNION 연산자 사용) OR UNION ALL (열이 생략되는 경우도 있기 때문)
+SELECT * FROM member_B
+```
+
+## ON 대신 USING을 쓸 수도 있어요
+ON old.id = new.id 와 USING(id)의 의미는 같다.
+
+## 다른 3개의 테이블 조인해 의미있는 데이터 추출하기
+```mysql
+SELECT
+    YEAR(i.registration_date) as '등록 연도',
+    COUNT(*) as '리뷰 개수',
+    AVG(r.star) as '별점 평균값'
+FROM
+    review as r
+    INNER JOIN item as i
+    ON r.item_id = i.id
+    INNER JOIN member as m
+    ON r.mem_id = m.id
+WHERE i.gender = 'u'
+GROUP BY YEAR(i.registration_date)
+HAVING COUNT(*) >= 10
+ORDER BY AVG(r.star) DESC;
+```
+
+## 다른 종류의 조인들
+1. NATURAL JOIN -  같은 이름의 컬럼을 찾아서 자동으로 그것들을 조인 조건을 설정하고, INNER JOIN을 해주는 조인
+2. CROSS JOIN - 두 테이블의 Cartesian Product를 구하는 조인
+3. SELF JOIN -  테이블이 자기 자신과 조인을 하는 경우. 같은 테이블을 마치 별도의 테이블인 것처럼 간주하고 진행된다는 점
+4. FULL OUTER JOIN -  LEFT OUTER JOIN 결과와 RIGHT OUTER JOIN 결과를 합치는 조인
+5. Non-Equi JOIN -  동등 조건이 아닌 다른 종류의 조건
+
+# 서브쿼리란? 하위 데이터베이스에 보내는 요청
+```mysql
+SELECT i.id, i.name, AVG(star) AS avg_star
+FROM
+    item as i LEFT OUTER JOIN review as r
+    ON r.item_id = i.id
+GROUP BY i.id, i.name
+HAVING avg_star < (SELECT AVG(star) FROM review)     # 서브쿼리
+ORDER BY avg_star DESC;
+```
+```mysql
+SELECT * FROM item
+WHERE id IN
+(
+SELECT item_id
+FROM review
+GROUP BY item_id HAVING COUNT(*) >=3  # WHERE 절에 있는 서브쿼리
+);
+```
+
+## ANY(SOME), ALL
+1. ANY=SOME의 의미 - 하나라도 조건을 만족하는 경우가 있으면 True를 리턴한다
+2. ALL의 의미 - 모든 경우에 대해서 해당 조건이 성립해야 True를 리턴
+
+## FROM 절에 있는 서브쿼리
+```mysql
+SELECT AVG(review_count)
+FROM 
+(SELECT SUBSTRING(address, 1, 2) AS region,
+	COUNT(*) AS review_count
+ FROM review AS r LEFT OUTER JOIN member AS m
+ ON r.mem_id = m.id
+ GROUP BY SUBSTRING(address, 1, 2)
+HAVING region IS NOT NULL
+AND region != '안드') AS review_count_summary;
+```
