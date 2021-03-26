@@ -306,3 +306,41 @@ FROM
 HAVING region IS NOT NULL
 AND region != '안드') AS review_count_summary;
 ```
+
+## EXISTS, NOT EXISTS와 상관 서브쿼리
+1. 비상관(Non_Correlated) 서브쿼리 : outer query와 상관 관계가 없는 서브쿼리
+2. 상관(Correlated) 서브쿼리 : outer query와 상관 관계가 있는 서브쿼리 (단독으로 실행 불가)
+```mysql
+SELECT *,
+(SELECT MIN(height) #  해당 row(의/들의) height 컬럼의 최솟값
+FROM member AS m2 WHERE birthday IS NOT NULL AND height IS NOT NULL # birthday & height 컬럼 둘다 값이 있는 회원들만
+AND YEAR(m1.birthday) = YEAR(m2.birthday)) # 같은 YEAR(birthday) ('생일연도') 값을 가진 row(를/들을) 
+AS min_height_in_the_year
+FROM member AS m1
+ORDER BY min_height_in_the_year ASC;
+```
+
+## 서브쿼리 종합 정리
+```mysql
+SELECT MAX(copang_report.price) AS max_price, 
+	AVG(copang_report.star) AS avg_star, 
+	COUNT(DISTINCT(copang_report.email)) AS distinct_email_count 
+FROM (SELECT price, star, email 
+      FROM item AS i INNER JOIN review AS r ON r.item_id = i.id
+                     INNER JOIN member AS m ON r.mem_id = m.id)
+AS copang_report;
+ ```
+ 
+ ## 서브쿼리로 더 간결해진 CASE 함수 내부
+ ```mysql
+ SELECT email, BMI,
+(CASE
+	WHEN weight IS NULL OR height IS NULL THEN '비만 여부 알 수 없음'
+	WHEN BMI >= 25 THEN '과체중 또는 비만'
+    WHEN BMI >= 18.5
+		AND BMI < 25 THEN '정상'
+	ELSE '저체중'
+END) AS obesity_check
+FROM (SELECT *, weight/((height/100)*(height/100)) AS BMI FROM member) AS subquery_for_BMI
+ORDER BY obesity_check ASC;
+ ```
