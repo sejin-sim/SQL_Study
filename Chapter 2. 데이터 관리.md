@@ -27,16 +27,16 @@ USE course_rating;
 * DOUBLE : -1.7976931348623157E+308 ~ -2.2250738585072014E-308, 0, 2.2250738585072014E-308 ~ 1.7976931348623157E+308
 
 ### 날짜 및 시간 타입(Date and Time Types)
-1. DATE : ’2020-03-26’ 연, 월, 일 순
-2. DATETIME : ’2020-03-26 09:30:27’ 연, 월, 일, 시, 분, 초
-3. TIMESTAMP : ’2020-03-26 09:30:27’ 연, 월, 일, 시, 분, 초   
+* DATE : ’2020-03-26’ 연, 월, 일 순
+* DATETIME : ’2020-03-26 09:30:27’ 연, 월, 일, 시, 분, 초
+* TIMESTAMP : ’2020-03-26 09:30:27’ 연, 월, 일, 시, 분, 초   
  ㄴ DATETIME와 다른 점 : 타임 존(time_zone) 정보도 함께 저장
-4. TIME : ’09:27:31’ 시:분:초
+* TIME : ’09:27:31’ 시:분:초
 
 ### 문자열 타입(String type) 
-1. CHAR : 0 ~ 255자
-2. VARCHAR : 0 ~ 65,535자, 가변형으로 값에 따라 저장 용량이 달라짐
-3. TEXT : 0 ~ 65,535자, CHAR형과는 내부 구현일부 차이 有
+* CHAR : 0 ~ 255자
+* VARCHAR : 0 ~ 65,535자, 가변형으로 값에 따라 저장 용량이 달라짐
+* TEXT : 0 ~ 65,535자, CHAR형과는 내부 구현일부 차이 有
 
 ## 테이블 생성 및 row 추가하기
 ```mysql
@@ -59,12 +59,53 @@ INSERT INTO animal_info (type, name, age, sex, weight, feature, entry_date)
   VALUES ('치타', '매튜', 20, 'm', 62, '나이가 노령이라 최근 활동량이 현저히 줄어든 모습이 보임', '2003-11-20');
 ```
 
-## row 갱신
+## row 
+### 갱신
 ```mysql
 UPDATE student SET major = '멀티미디어학과', name = '차소원' WHERE id = 2;
 ```
-
-## row 삭제
+### 삭제
 ```mysql
 DELETE FROM student WHERE id=4;
 ```
+
+## coulmn 
+### 추가 
+```mysql
+ALTER TABLE Student ADD gender CHAR(1) NULL;
+```
+
+### 이름 변경
+```mysql
+ALTER TABLE student
+	RENAME COLUMN student_number TO registration_number;
+```
+
+### 삭제 
+```mysql
+ALTER TABLE student
+	DROP column admission_date;
+```
+
+### 데이터 타입 변경
+```mysql
+ALTER TABLE student MODIFY major INT;
+```
+
+### DEFAULT 속성 주기
+```mysql
+ALTER TABLE student MODIFY major INT NOT NULL DEFAULT 101;
+```
+
+## DATETIME, TIMESTAMP 타입의 컬럼에 값을 넣는 2가지 방식
+### NOW() 함수 사용하기 
+```mysql
+UPDATE post
+	SET content = '오늘 기분이 좋아요', 
+		recent_modified_time = NOW()
+	WHERE id = 1;
+ ```
+ 
+ ### 속성 설정
+ - DEFAULT CURRENT_TIMESTAMP : 새 row 추가 시 현재 시간으로 자동 설정
+ - ON UPDATE CURRENT_TIMESTAMP : 기존 row에서 단 하나의 컬럼이라도 갱신되면 갱신될 때의 시간 자동 갱신
