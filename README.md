@@ -1,4 +1,5 @@
 # SQL Tutorials (`MySQL` 기준 작성)
+## Chapter 1. 데이터 분석
 
 ## DBMS와 SQL
 - 데이터베이스 : row & coulmn으로 이뤄진 table
@@ -344,3 +345,45 @@ END) AS obesity_check
 FROM (SELECT *, weight/((height/100)*(height/100)) AS BMI FROM member) AS subquery_for_BMI
 ORDER BY obesity_check ASC;
  ```
+
+## 뷰 : 조인 등의 작업을 해서 만든 '결과 테이블'이 `가상`(물리적X)으로 저장된 형태
+```mysql
+CREATE VIEW three_tables_joined AS   # 뷰 생성
+SELECT i.id, i.name, AVG(star) AS avg_star, COUNT(*) AS count_star
+FROM item AS i LEFT OUTER JOIN review AS r on r.item_id = i.id
+	LEFT OUTER JOIN member AS m ON r.mem_id = m.id
+WHERE m.gender = 'f'
+GROUP BY i.id, i.name
+HAVING COUNT(*) >= 2
+ORDER BY AVG(star) DESC, COUNT(*) DESC;
+ ```
+ ```mysql
+SELECT * FROM copang_main.three_tables_joined
+	WHERE avg_star = (
+		SELECT MAX(avg_star) FROM copang_main.three_tables_joined
+	) AND count_star = (
+		SELECT MAX(count_star) FROM copang_main.three_tables_joined
+	);
+ ```
+### 장점 : 사용자에게 높은 편의성(재활용 가능), 다양한 구조의 데이터 분석 기반을 구축 가능, 데이터 보안 제공
+```
+CREATE VIEW emp_view2 AS SELECT id, name, age, department FROM employee WHERE department != 'secret'; # 부서는 미조회 되게
+
+CREATE VIEW v_emp AS SELECT id, name, age, department, phone_num, hire_date FROM employee
+SELECT * FROM v_emp;
+```
+ 
+## 실무에서 해야할 일
+1. 존재하는 데이터 베이스 확인
+```mysql 
+SHOW DATABASES;
+```
+2. 한 데이터베이스 안의 테이블(뷰도 포함)들 파악
+```mysql 
+SHOW FULL TABLES IN copang_main;
+```
+3. 한 테이블의 컬럼 구조 파악
+```mysql 
+DESCRIBE item;
+```
+4. Foreign Key(외래키) 파악 : 해당 회사의 데이터베이스를 설계한 분의 설명 or 본인이 직접 데이터의 관계 및 흐름을 파악
