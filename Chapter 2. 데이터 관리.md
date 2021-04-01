@@ -79,6 +79,7 @@ ALTER TABLE Student ADD gender CHAR(1) NULL;
 ```mysql
 ALTER TABLE student
 	RENAME COLUMN student_number TO registration_number;
+	CHANGE kind genre_code INT NOT NULL;
 ```
 
 ### 삭제 
@@ -89,12 +90,16 @@ ALTER TABLE student
 
 ### 데이터 타입 변경
 ```mysql
-ALTER TABLE student MODIFY major INT;
+ALTER TABLE student 
+	MODIFY major INT,
+	MODIFY isbn VARCHAR(50) UNIQUE NOT NULL;
 ```
 
 ### DEFAULT 속성 주기
 ```mysql
-ALTER TABLE student MODIFY major INT NOT NULL DEFAULT 101;
+ALTER TABLE student 
+	MODIFY major INT NOT NULL DEFAULT 101,
+	MODIFY location VARCHAR(10) NOT NULL DEFAULT 'warehouse';
 ```
 
 ## DATETIME, TIMESTAMP 타입의 컬럼에 값을 넣는 2가지 방식
@@ -110,20 +115,14 @@ UPDATE post
  - DEFAULT CURRENT_TIMESTAMP : 새 row 추가 시 현재 시간으로 자동 설정
  - ON UPDATE CURRENT_TIMESTAMP : 기존 row에서 단 하나의 컬럼이라도 갱신되면 갱신될 때의 시간 자동 갱신
 
-## 속성 변경
-```mysql
-ALTER TABLE book 
-    MODIFY isbn VARCHAR(50) UNIQUE NOT NULL,
-    ADD CONSTRAINT page_rule CHECK (page > 0),
-    CHANGE kind genre_code INT NOT NULL,
-    MODIFY location VARCHAR(10) NOT NULL DEFAULT 'warehouse';
- ```
+## Unique와 Primary Key의 차이
  - Primary Key는 NULL을 가질 수 없지만, Unique는 NULL을 허용
 
 ## 테이블에 CONSTRAINT 걸기
 ```mysql
 ALTER TABLE student
-	ADD CONSTRAINT st_rule CHECK (registration_number < 30000000);
+	ADD CONSTRAINT st_rule CHECK (registration_number < 30000000),
+	ADD CONSTRAINT page_rule CHECK (page > 0);
 	
 INSERT INTO student (name, registration_number)
 	VALUES ('이대위', 30000000); # 실행 불가
