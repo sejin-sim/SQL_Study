@@ -75,6 +75,13 @@ DELETE FROM student WHERE id=4;
 ALTER TABLE Student ADD gender CHAR(1) NULL;
 ```
 
+### 타입 변경
+```mysql
+ALTER TABLE student 
+	MODIFY major INT,
+	MODIFY isbn VARCHAR(50) UNIQUE NOT NULL;
+```
+
 ### 이름 변경
 ```mysql
 ALTER TABLE student
@@ -86,13 +93,6 @@ ALTER TABLE student
 ```mysql
 ALTER TABLE student
 	DROP column admission_date;
-```
-
-### 데이터 타입 변경
-```mysql
-ALTER TABLE student 
-	MODIFY major INT,
-	MODIFY isbn VARCHAR(50) UNIQUE NOT NULL;
 ```
 
 ### DEFAULT 속성 주기
@@ -118,26 +118,27 @@ UPDATE post
 ## Unique와 Primary Key의 차이
  - Primary Key는 NULL을 가질 수 없지만, Unique는 NULL을 허용
 
-## 테이블에 CONSTRAINT 걸기
+## Table
+### CONSTRAINT 걸기
 ```mysql
 ALTER TABLE student
 	ADD CONSTRAINT st_rule CHECK (registration_number < 30000000),
 	ADD CONSTRAINT page_rule CHECK (page > 0);
 	
 INSERT INTO student (name, registration_number)
-	VALUES ('이대위', 30000000); # 실행 불가
+	VALUES ('이대위', 30000000); # st_rule로 실행 불가
 
 ALTER TABLE student DROP CONSTRAINT st_rule;
 ```
 
-## 테이블 복사본 만들기, 삭제
+### 복사본 만들기, 삭제
 ```mysql
 CREATE TABLE copy_of_undergradute AS SELECT * from undergraduate;
 
 DROP TABLE copy_of_undergradute;
 ```
 
-## 테이블 컬럼 구조만 복사하기
+### 컬럼 구조만 복사하기
 ```mysql
 CREATE TABLE copy_of_undergradute LIKE undergraduate;
 
@@ -145,7 +146,7 @@ INSERT INTO copy_of_undergraduate
 	SELECT * FROM undergraduate WHERE major = 101; # 조건걸어서 데이터 삽입
 ```
 
-## 테이블의 모든 데이터 삭제
+### 모든 데이터 삭제
 ```mysql
 DELETE FROM final_exam_result;
 TRUNCATE final_exam_result; 
