@@ -151,3 +151,29 @@ INSERT INTO copy_of_undergraduate
 DELETE FROM final_exam_result;
 TRUNCATE final_exam_result; 
 ```
+
+## course 테이블과 review 테이블 만들기
+CREATE TABLE  course_rating.course (
+id INT NOT NULL AUTO_INCREMENT,
+title VARCHAR(30) NULL, 
+semester VARCHAR(6) NULL,
+maximum INT NULL,
+professor VARCHAR(10) NULL,
+PRIMARY KEY(id)
+)
+
+CREATE TABLE  course_rating.review (
+id INT NOT NULL AUTO_INCREMENT,
+course_id INT NULL, 
+star INT NULL,
+comment VARCHAR(500) NULL,
+PRIMARY KEY(id)
+)
+
+## Foreign Key(참조 무결성을 지키기 위해 필요) 설정하기
+ALTER TABLE `course_rating`.`review` 
+ADD CONSTRAINT `fk_review_table`
+  FOREIGN KEY (`course_id`)
+  REFERENCES `course_rating`.`course` (`id`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
