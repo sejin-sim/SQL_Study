@@ -109,3 +109,45 @@ UPDATE post
  ### 속성 설정
  - DEFAULT CURRENT_TIMESTAMP : 새 row 추가 시 현재 시간으로 자동 설정
  - ON UPDATE CURRENT_TIMESTAMP : 기존 row에서 단 하나의 컬럼이라도 갱신되면 갱신될 때의 시간 자동 갱신
+
+## 속성 변경
+```mysql
+ALTER TABLE book 
+    MODIFY isbn VARCHAR(50) UNIQUE NOT NULL,
+    ADD CONSTRAINT page_rule CHECK (page > 0),
+    CHANGE kind genre_code INT NOT NULL,
+    MODIFY location VARCHAR(10) NOT NULL DEFAULT 'warehouse';
+ ```
+ - Primary Key는 NULL을 가질 수 없지만, Unique는 NULL을 허용
+
+## 테이블에 CONSTRAINT 걸기
+```mysql
+ALTER TABLE student
+	ADD CONSTRAINT st_rule CHECK (registration_number < 30000000);
+	
+INSERT INTO student (name, registration_number)
+	VALUES ('이대위', 30000000); # 실행 불가
+
+ALTER TABLE student DROP CONSTRAINT st_rule;
+```
+
+## 테이블 복사본 만들기, 삭제
+```mysql
+CREATE TABLE copy_of_undergradute AS SELECT * from undergraduate;
+
+DROP TABLE copy_of_undergradute;
+```
+
+## 테이블 컬럼 구조만 복사하기
+```mysql
+CREATE TABLE copy_of_undergradute LIKE undergraduate;
+
+INSERT INTO copy_of_undergraduate
+	SELECT * FROM undergraduate WHERE major = 101; # 조건걸어서 데이터 삽입
+```
+
+## 테이블의 모든 데이터 삭제
+```mysql
+DELETE FROM final_exam_result;
+TRUNCATE final_exam_result; 
+```
