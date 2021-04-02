@@ -153,6 +153,7 @@ TRUNCATE final_exam_result;
 ```
 
 ## course 테이블과 review 테이블 만들기
+```mysql
 CREATE TABLE  course_rating.course (
 id INT NOT NULL AUTO_INCREMENT,
 title VARCHAR(30) NULL, 
@@ -169,11 +170,30 @@ star INT NULL,
 comment VARCHAR(500) NULL,
 PRIMARY KEY(id)
 )
+```
 
 ## Foreign Key(참조 무결성을 지키기 위해 필요) 설정하기
-ALTER TABLE `course_rating`.`review` 
-ADD CONSTRAINT `fk_review_table`
-  FOREIGN KEY (`course_id`)
-  REFERENCES `course_rating`.`course` (`id`)
-  ON DELETE RESTRICT
-  ON UPDATE RESTRICT;
+- 실제로는 레거시데이터를 위해 물리적 설정 안하는 것 多
+```mysql
+ALTER TABLE delivery
+ADD CONSTRAINT fk_delivery_order
+  FOREIGN KEY (order_id)
+  REFERENCES customer_order(id)
+  ON DELETE SET NULL
+  ON UPDATE CASCADE;
+```
+
+## SHOW CREATE TABLE 문으로 현재 테이블 어떻게 만들 수 있는지 보기
+- 특정 테이블을 지금 바로 생성한다고 할 때 작성해야할 CREATE TABLE 문이 뭔지를 보여줌
+```mysql
+SHOW CREATE TABLE review;
+```
+## Foreign Key : 부모 테이블의 row를 삭제하려 할 때
+- RESTRICT : 자녀 row가 있으면 삭제 불가   
+- CASCADE : 자녀 row가 있어도 삭제 가능. 부모 자녀 다 삭제됨   
+- SET NULL : 자녀 row의 Foreign Key를 NULL로 SET
+
+## `스키마(Schema)` : 데이터베이스에 관한 모든 설계사항
+- 동의어 : '데이터베이스 모델링' 또는 '데이터베이스 디자인'
+- 개념적 스키마(Conceptual Schema) : 하나의 조직, 하나의 기관, 하나의 서비스 등에서 필요로 하는 데이터베이스 설계사항을 의미
+- 물리적 스키마(Physical Schema) : 데이터를 실제로 컴퓨터의 저장장치에 어떤 방식으로 저장할지를 결정하는 스키마
