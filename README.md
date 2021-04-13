@@ -1,4 +1,4 @@
-# SQL Tutorials (`MySQL` 기준 작성)
+# SQL Study (`MySQL` 기준 작성)
 ## Chapter 1. 데이터 분석
 
 ## DBMS와 SQL
