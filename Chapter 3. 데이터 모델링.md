@@ -17,7 +17,6 @@
 ## Relational 모델
 - Relational Model : 데이터를 로우와 컬럼으로 정리한 테이블, 또는 표를 의미   
 
-
 ## Entity-Relationship 모델 (ERM)
 -  ERM : Entity를 하나의 네모로, attribute을 네모 안에 문자열로, 그리고 relationship을 선으로 표현   
 ![image](https://user-images.githubusercontent.com/67107675/114646276-ef52ff00-9d15-11eb-9806-ceb67b87a04d.png)
@@ -41,3 +40,9 @@
   2. 모든 동사는 Relationship 후보
   3. 하나의 "값"으로 표현할 수 있는 명사는 attribute의 후보   
    ㄴ Attribute 후보 찾기 예외 경우 : 하나의 값으로 표현할 수 있더라도, 하나의 entity가 여러 개의 값을 가져야 하는 경우
+   
+## 카디널리티
+ - 카디널리티는 M:N 관계: 두 entity type 사이 관계에서 한 종류의 entity가 다른 종류의 entity 몇 개에 대해서 관계를 맺을 수 있는지를 나타내는 개념
+ - 1:1 관계, 1:N 관계, M:N 관계
+ - 카디널리티 ERM(=ERD)     
+ ![image](https://user-images.githubusercontent.com/67107675/114829953-a3cc4e00-9e06-11eb-8941-ad3d5453e4b4.png)
