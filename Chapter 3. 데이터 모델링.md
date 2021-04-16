@@ -60,6 +60,23 @@
 - 이진 탐색 : 특정 순서대로 정렬돼 있을 때, 중간 원소를 처음부터 확인 O(lg(n))
 
 ## 인덱스
-- Clustered 인덱스 : 데이터 자체를 특정 순서대로 저장하는 인덱스
-- Non-clustered 인덱스 : 로우들이 실제 저장된 순서 자체는 건들지 않고, 아예 다른 곳에 컬럼 값들의 순서를 저장하는 방법
+### Clustered 인덱스 : 데이터 자체를 특정 순서대로 저장하는 인덱스
+```mysql
+CREATE CLUSTERED INDEX index_name ON table_name (column_name)
+```
 
+### Non-clustered 인덱스 : 로우들이 실제 저장된 순서 자체는 건들지 않고, 아예 다른 곳에 컬럼 값들의 순서를 저장하는 방법
+```mysql
+CREATE INDEX index_name ON table_name (column_name)
+```
+
+### Composite 인덱스 : 여러 개의 컬럼에 대한 인덱스
+```mysql
+CREATE INDEX index_name ON table_name (column_name_1, column_2, ...)
+```
+
+### 확인 & 삭제하기
+```mysql
+SHOW INDEX FROM table_name;
+DROP INDEX index_name ON table_name;
+```
