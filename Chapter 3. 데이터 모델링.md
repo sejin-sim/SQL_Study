@@ -46,3 +46,20 @@
  - 1:1 관계, 1:N 관계, M:N 관계
  - 카디널리티 ERM(=ERD)     
  ![image](https://user-images.githubusercontent.com/67107675/114829953-a3cc4e00-9e06-11eb-8941-ad3d5453e4b4.png)
+
+## 정규화
+### 1NF : 모든 항목에 값이 있어야 한다. (NOT NULL & 중복되는 데이터가 없어야 한다
+### 2NF : 개체의 속성이 한 식별자에 종속되어야 한다.
+![image](https://user-images.githubusercontent.com/67107675/114982375-55808300-9eca-11eb-9817-62823f3cb2da.png)
+
+### 3NF
+![image](https://user-images.githubusercontent.com/67107675/114982411-616c4500-9eca-11eb-8de4-56270757c6ae.png)
+
+## 선형 vs 이진 탐색
+- 선형 탐색 : 가장 첫 원소부터 시작해서, 가장 마지막 원소까지 순서대로 하나씩 확인 (O(n))
+- 이진 탐색 : 특정 순서대로 정렬돼 있을 때, 중간 원소를 처음부터 확인 O(lg(n))
+
+## 인덱스
+- Clustered 인덱스 : 데이터 자체를 특정 순서대로 저장하는 인덱스
+- Non-clustered 인덱스 : 로우들이 실제 저장된 순서 자체는 건들지 않고, 아예 다른 곳에 컬럼 값들의 순서를 저장하는 방법
+
